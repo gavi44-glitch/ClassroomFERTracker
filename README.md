@@ -1,6 +1,6 @@
-# ============================================
+
 # ClassroomFERTracker - Setup & Run
-# ============================================
+
 
 # 1️⃣ Clone repository
 git clone https://github.com/gavi44-glitch/ClassroomFERTracker.git
@@ -12,16 +12,16 @@ python -m venv .emotion
 .\emotion\Scripts\Activate.ps1
 
 ## Windows CMD
-# python -m venv .emotion
-# .\emotion\Scripts\activate.bat
+python -m venv .emotion
+.\emotion\Scripts\activate.bat
 
 ## macOS / Linux
-# python3 -m venv .emotion
-# source .emotion/bin/activate
+python3 -m venv .emotion
+source .emotion/bin/activate
 
 ## Conda (optional)
-# conda create -n emotion python=3.8
-# conda activate emotion
+conda create -n emotion python=3.8
+conda activate emotion
 
 # 3️⃣ Install Python dependencies
 pip install -r requirements.txt
@@ -39,11 +39,3 @@ uvicorn main:app --reload
 cd ../emotion-recognition
 npm start
 # Frontend default: http://localhost:3000
-
-# ============================================
-# Notes:
-# - Jalankan backend sebelum frontend agar API dapat diakses
-# - Gunakan virtual environment atau Conda untuk menghindari konflik dependency
-# - Pastikan Python >=3.8, Node.js >=16, npm >=8
-# - Untuk melihat dokumentasi API FastAPI, akses: http://127.0.0.1:8000/docs
-# ============================================
