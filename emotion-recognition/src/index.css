@@ -1,13 +1,89 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #141414;
+  --card-foreground: #fafafa;
+  --border: #262626;
+  --muted: #1a1a1a;
+  --muted-foreground: #a1a1a1;
+  --accent: #262626;
+  --accent-foreground: #fafafa;
+  --primary: #10b981;
+  --primary-foreground: #000000;
+  --destructive: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+  --radius: 8px;
+
+  /* Emotion colors */
+  --emotion-angry: #ef4444;
+  --emotion-disgust: #22c55e;
+  --emotion-fear: #a855f7;
+  --emotion-happy: #f59e0b;
+  --emotion-sad: #3b82f6;
+  --emotion-surprise: #eab308;
+  --emotion-neutral: #6b7280;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+}
+
+/* App Layout */
+.app {
+  display: flex;
+  min-height: 100vh;
+  background: var(--background);
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background: var(--background);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #404040;
 }

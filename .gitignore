@@ -1,1 +1,134 @@
+# Dependencies
 node_modules/
+*/node_modules/
+emotion-recognition/node_modules/
+
+# Python virtual environment
+venv/
+*/venv/
+env/
+*/env/
+.venv/
+*/.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python cache
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Next.js / React
+.next/
+out/
+build/
+dist/
+
+# Production
+/build
+/.next/
+/out/
+
+# Testing
+coverage/
+*.cover
+*.py,cover
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+htmlcov/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Model files (if they're large)
+*.pth
+*.onnx
+*.h5
+*.pkl
+*.pt
+models/*.pth
+models/*.onnx
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+tmp/
+
+# MacOS
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
