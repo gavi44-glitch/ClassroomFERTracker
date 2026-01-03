@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-
 import {
   LayoutDashboard,
   History,
@@ -9,6 +8,7 @@ import {
   GraduationCap,
   Users,
 } from "lucide-react";
+import "../styles/components.css";
 
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -22,7 +22,12 @@ const stats = [
   { label: "Students Tracked", value: "156" },
 ];
 
-export default function Sidebar({ activeTab, setActiveTab }) {
+interface SidebarProps {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+}
+
+export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
@@ -48,6 +53,18 @@ export default function Sidebar({ activeTab, setActiveTab }) {
               <span>{item.label}</span>
             </button>
           ))}
+        </div>
+
+        <div className="nav-section">
+          <span className="nav-section-label">Quick Stats</span>
+          <div className="quick-stats">
+            {stats.map((stat, index) => (
+              <div key={index} className="stat-item">
+                <span className="stat-value">{stat.value}</span>
+                <span className="stat-label">{stat.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </nav>
 

@@ -8,13 +8,13 @@ import StudentGrid from "./StudentGrid";
 import EngagementChart from "./EngagementChart";
 import AlertsPanel from "./AlertsPanel";
 import { Camera, CameraOff, Maximize2, Wifi, WifiOff } from "lucide-react";
-import "../styles/components.css";
 import type {
   Prediction,
   EmotionHistoryEntry,
   Alert,
   AppSettings,
 } from "../../lib/types";
+import "../styles/components.css";
 
 const WEBSOCKET_URL = "ws://localhost:8000/ws";
 

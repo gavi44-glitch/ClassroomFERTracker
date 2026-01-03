@@ -1,7 +1,14 @@
-import { TrendingUp } from "lucide-react";
 import React from "react";
+import { TrendingUp } from "lucide-react";
+import "../styles/components.css";
 
-export default function EngagementChart({ emotionHistory }) {
+interface EngagementChartProps {
+  emotionHistory: { time: Date; engagement: number; students: number }[];
+}
+
+export default function EngagementChart({
+  emotionHistory,
+}: EngagementChartProps) {
   const data = emotionHistory.slice(-30);
   const maxEngagement = 100;
 
@@ -42,6 +49,8 @@ export default function EngagementChart({ emotionHistory }) {
     data.length > 0
       ? Math.round(data.reduce((a, b) => a + b.engagement, 0) / data.length)
       : 0;
+  const currentStudents =
+    data.length > 0 ? data[data.length - 1]?.students || 0 : 0;
 
   return (
     <div className="card engagement-chart">
@@ -63,9 +72,7 @@ export default function EngagementChart({ emotionHistory }) {
             <span className="stat-label">Average</span>
           </div>
           <div className="engagement-stat">
-            <span className="stat-value">
-              {data.length > 0 ? data[data.length - 1]?.students || 0 : 0}
-            </span>
+            <span className="stat-value">{currentStudents}</span>
             <span className="stat-label">Students</span>
           </div>
         </div>

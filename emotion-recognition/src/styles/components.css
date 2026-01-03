@@ -826,3 +826,34 @@
   margin: 12px 0 0 0;
   line-height: 1.5;
 }
+
+/* Emotion tag colors */
+.emotion-tag.happy {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.emotion-tag.sad {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.emotion-tag.angry {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.emotion-tag.fear {
+  background: rgba(139, 92, 246, 0.2);
+  color: #8b5cf6;
+}
+
+.emotion-tag.surprise {
+  background: rgba(234, 179, 8, 0.2);
+  color: #eab308;
+}
+
+.emotion-tag.disgust {
+  background: rgba(132, 204, 22, 0.2);
+  color: #84cc16;
+}

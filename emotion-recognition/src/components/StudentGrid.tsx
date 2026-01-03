@@ -1,7 +1,12 @@
-import { User } from "lucide-react";
 import React from "react";
+import { User } from "lucide-react";
+import "../styles/components.css";
 
-const EMOTION_COLORS = {
+interface StudentGridProps {
+  predictions: { box: number[]; emotion_label: string; score: number }[];
+}
+
+const EMOTION_COLORS: Record<string, string> = {
   angry: "var(--emotion-angry)",
   disgust: "var(--emotion-disgust)",
   fear: "var(--emotion-fear)",
@@ -11,7 +16,7 @@ const EMOTION_COLORS = {
   neutral: "var(--emotion-neutral)",
 };
 
-export default function StudentGrid({ predictions }) {
+export default function StudentGrid({ predictions }: StudentGridProps) {
   if (!predictions || predictions.length === 0) {
     return (
       <div className="card student-grid">

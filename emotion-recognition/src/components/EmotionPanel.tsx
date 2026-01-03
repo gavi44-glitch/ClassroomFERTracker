@@ -1,6 +1,10 @@
-"use client";
-
 import React from "react";
+import "../styles/components.css";
+
+interface EmotionPanelProps {
+  emotionStats: Record<string, { count: number; totalScore: number }>;
+  predictions: { emotion_label: string; score: number }[];
+}
 
 const EMOTIONS = [
   { key: "happy", label: "Happy", color: "var(--emotion-happy)" },
@@ -12,19 +16,21 @@ const EMOTIONS = [
   { key: "disgust", label: "Disgust", color: "var(--emotion-disgust)" },
 ];
 
-export default function EmotionPanel({ emotionStats, predictions }) {
+export default function EmotionPanel({
+  emotionStats,
+  predictions,
+}: EmotionPanelProps) {
   const totalStudents = predictions.length || 1;
 
-  const getEmotionPercentage = (key) => {
+  const getEmotionPercentage = (key: string) => {
     if (!emotionStats[key]) return 0;
     return Math.round((emotionStats[key].count / totalStudents) * 100);
   };
 
-  const getEmotionCount = (key) => {
+  const getEmotionCount = (key: string) => {
     return emotionStats[key]?.count || 0;
   };
 
-  // Find dominant emotion
   let dominant = "neutral";
   let maxCount = 0;
   Object.entries(emotionStats).forEach(([key, value]) => {
@@ -47,7 +53,7 @@ export default function EmotionPanel({ emotionStats, predictions }) {
             className="dominant-value"
             style={{ color: EMOTIONS.find((e) => e.key === dominant)?.color }}
           >
-            {dominant.charAt(0).toUpperCase() + dominant.slice(1)}
+            {dominant}
           </div>
         </div>
 
