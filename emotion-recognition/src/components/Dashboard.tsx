@@ -132,6 +132,11 @@ export default function Dashboard({
       setConnected(true);
 
       const frameInterval = Math.round(1000 / settings.frameRate);
+      
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
 
       intervalRef.current = setInterval(() => {
         if (
@@ -141,11 +146,23 @@ export default function Dashboard({
           socket.readyState === WebSocket.OPEN &&
           cameraEnabled
         ) {
-          const screenshot = webcamRef.current.getScreenshot();
+          // const screenshot = webcamRef.current.getScreenshot();
+          const video = webcamRef.current.video!;
+          const canvas = document.createElement("canvas");
+
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+
+          const ctx = canvas.getContext("2d")!;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          const screenshot = canvas.toDataURL("image/jpeg", 0.8);
+
           if (screenshot) {
             socket.send(
               JSON.stringify({
                 data: { image: screenshot },
+                cameraEnabled: cameraEnabled,
                 config: { confidence: settings.confidenceThreshold },
               })
             );
@@ -244,31 +261,72 @@ export default function Dashboard({
   ]);
 
   useEffect(() => {
-    if (sessionActive) {
-      connectWebSocket();
-    } else {
-      if (socketRef.current) {
-        socketRef.current.close();
-      }
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      setConnected(false);
-      setPredictions([]);
-      setAlerts([]);
-      setEmotionHistory([]);
+  if (!sessionActive) {
+    if (socketRef.current) {
+      socketRef.current.close();
+      socketRef.current = null;
     }
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setConnected(false);
+    setPredictions([]);
+    setAlerts([]);
+    setEmotionHistory([]);
+    return;
+  }
 
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      if (socketRef.current) {
-        socketRef.current.close();
-      }
-    };
-  }, [sessionActive, connectWebSocket]);
+  connectWebSocket();
 
+  return () => {
+    if (socketRef.current) {
+      socketRef.current.close();
+      socketRef.current = null;
+    }
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+}, [sessionActive, connectWebSocket]);
+
+useEffect(() => {
+  if (!sessionActive || !cameraEnabled) return;
+  if (!webcamRef.current?.video || !canvasRef.current) return;
+
+  const video = webcamRef.current.video;
+  const canvas = canvasRef.current;
+
+  const syncCanvas = () => {
+    if (video.videoWidth > 0 && video.videoHeight > 0) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+    }
+  };
+
+  video.addEventListener("loadedmetadata", syncCanvas);
+  syncCanvas();
+
+  return () => {
+    video.removeEventListener("loadedmetadata", syncCanvas);
+  };
+}, [sessionActive, cameraEnabled]);
+
+useEffect(() => {
+  if (!cameraEnabled && canvasRef.current) {
+    const ctx = canvasRef.current.getContext("2d");
+    ctx?.clearRect(
+      0,
+      0,
+      canvasRef.current.width,
+      canvasRef.current.height
+    );
+  }
+}, [cameraEnabled]);
+ 
+
+    
   return (
     <div className="dashboard">
       <div className="dashboard-grid">

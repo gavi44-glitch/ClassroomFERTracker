@@ -1,4 +1,6 @@
 import os
+import asyncio
+
 import json
 import base64
 import cv2
@@ -56,7 +58,7 @@ app.add_middleware(
 )
 
 
-def detect_faces(frame, conf=0.25):
+def detect_faces(frame, conf=0.1):
     results = yolo_model(frame, conf=conf, verbose=False)
     boxes = results[0].boxes
     if boxes is not None and len(boxes) > 0:
@@ -79,6 +81,37 @@ def classify_emotion(crop):
         print(f"Emotion classification error: {e}")
         return 6, 0.5  
 
+def run_inference(image, conf):
+    boxes = detect_faces(image, conf=conf)
+
+    results = []
+    for box in boxes:
+        x1, y1, x2, y2 = map(int, box[:4])
+
+        x1 = max(0, x1)
+        y1 = max(0, y1)
+        x2 = min(image.shape[1], x2)
+        y2 = min(image.shape[0], y2)
+
+        crop = image[y1:y2, x1:x2]
+
+        if crop.size == 0 or crop.shape[0] < 10 or crop.shape[1] < 10:
+            continue
+
+        idx, score = classify_emotion(crop)
+
+        if score < 0.55:
+            continue 
+
+        results.append({
+            "box": [x1, y1, x2, y2],
+            "emotion_index": idx,
+            "emotion_label": emotion_labels[idx],
+            "score": score
+        })
+
+    return results
+
 
 # Per-connection state (not global)
 @app.websocket("/ws")
@@ -95,59 +128,47 @@ async def websocket_endpoint(websocket: WebSocket):
             payload = await websocket.receive_text()
             data = json.loads(payload)
 
-            # Handle the image data
+            # if data.get("type") == "ping":
+            #     await websocket.send_json({"type": "pong"})
+            #     continue
+            camera_enabled = data.get("cameraEnabled", True)
+
+            if not camera_enabled:
+                last_results = []
+                await websocket.send_json({"predictions": []})
+                continue
+
             image_data = data.get("data", {}).get("image", "")
             if not image_data:
                 continue
 
-            # Remove data URL prefix if present
             if "," in image_data:
                 image_b64 = image_data.split(",")[1]
             else:
                 image_b64 = image_data
 
-            # Decode image
             image_bytes = base64.b64decode(image_b64)
             image_array = np.frombuffer(image_bytes, np.uint8)
             image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
 
             if image is None:
+                last_results = []   
                 await websocket.send_json({"predictions": []})
                 continue
 
+
             now = time.time()
 
-            # Run detection every 0.25 seconds
             run_detection = (now - last_detection) > 0.25
 
             if run_detection:
                 last_detection = now
-                boxes = detect_faces(image, conf=0.2)
-                last_boxes = boxes
 
-                results = []
-                for box in boxes:
-                    x1, y1, x2, y2 = map(int, box[:4])
-                    
-                    # Ensure valid crop coordinates
-                    x1 = max(0, x1)
-                    y1 = max(0, y1)
-                    x2 = min(image.shape[1], x2)
-                    y2 = min(image.shape[0], y2)
-
-                    crop = image[y1:y2, x1:x2]
-
-                    if crop.size == 0 or crop.shape[0] < 10 or crop.shape[1] < 10:
-                        continue
-
-                    idx, score = classify_emotion(crop)
-
-                    results.append({
-                        "box": [x1, y1, x2, y2],
-                        "emotion_index": idx,
-                        "emotion_label": emotion_labels[idx],
-                        "score": score
-                    })
+                results = await asyncio.to_thread(
+                    run_inference,
+                    image,
+                    0.45
+                )
 
                 last_results = results
             else:
@@ -169,7 +190,6 @@ async def websocket_endpoint(websocket: WebSocket):
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "device": str(device)}
-
 
 if __name__ == "__main__":
     import uvicorn
